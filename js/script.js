@@ -5,7 +5,7 @@ const todoControl = document.querySelector('.todo-control'), // форма
     todoList = document.querySelector('.todo-list'), // список дел
     todoCompleted = document.querySelector('.todo-completed'); // выполненные дела
    
-   let todoData = []; // массив дел
+let todoData = []; // массив дел
 
     const render = function() {
 
@@ -26,7 +26,7 @@ const todoControl = document.querySelector('.todo-control'), // форма
                 '</div>';
 
             if (item.completed) {
-                todoCompleted.append(li);
+                todoCompleted.append(li); 
             } else {
              todoList.append(li);
             }
@@ -35,6 +35,7 @@ const todoControl = document.querySelector('.todo-control'), // форма
 
             bthTodoComplete.addEventListener('click', function() {
                 item.completed = !item.completed;
+                localStorage.setItem('todoList', JSON.stringify(todoData));
                 render();
             });
 
@@ -42,30 +43,33 @@ const todoControl = document.querySelector('.todo-control'), // форма
          
             bthTodoRemove.addEventListener('click' , function() {
                 todoData.splice(i, 1);
+                localStorage.setItem('todoList', JSON.stringify(todoData));
                 render();
             });
 
-            localStorage.setItem('todoList', JSON.stringify(todoData));
-            
-            
         });
-
+        
     };
 
     todoControl.addEventListener('submit', function (event) {
         event.preventDefault();
-    
+        
+        if (localStorage.getItem('todoList') && localStorage.getItem('todoList') !== null) {
+            todoData = JSON.parse(localStorage.getItem('todoList')); 
+        }
+
         const newTodo = {
             value: headerInput.value,
             completed: false
         };
 
-        todoData.push(newTodo);
+        
 
         if (headerInput.value.trim() !== '') {
+            todoData.push(newTodo);
+            localStorage.setItem('todoList', JSON.stringify(todoData));
             render();
         }
-
         headerInput.value = '';
 
     });
